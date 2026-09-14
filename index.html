@@ -82,6 +82,10 @@
                     <h1 id="page-title" class="text-xl font-bold text-white">Painel Geral</h1>
                 </div>
                 <div class="flex items-center space-x-3">
+                    <button onclick="exportarCSV()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-file-arrow-down"></i>
+                        <span>Exportar Lista (CSV)</span>
+                    </button>
                     <button onclick="openLeadModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-2">
                         <i class="fa-solid fa-user-plus"></i>
                         <span>Novo Lead</span>
@@ -140,7 +144,7 @@
                     <!-- Bloco de Atalho Rápido -->
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
                         <h3 class="text-lg font-bold text-white mb-2">Processo de Atendimento da Construtora</h3>
-                        <p class="text-sm text-slate-400">O sistema segue uma rigorosa cadência de 3 dias (1ª tentativa, 2ª tentativa e 3ª tentativa). Clique em "Tratado" após cada contato para avançar o lead para o dia seguinte.</p>
+                        <p class="text-sm text-slate-400">O sistema segue uma rigorosa cadência de 3 dias (1ª tentativa, 2ª tentativa e 3ª tentativa). Clique em "Tratado" após cada contato para avançar o lead para o dia seguinte. Use o botão "Exportar Lista (CSV)" para gerar sua planilha de discagem rápida.</p>
                     </div>
                 </div>
 
@@ -273,7 +277,7 @@
         </div>
     </div>
 
-    <!-- MODAL: DESCARTAR LEAD (Com Motivos Obrigatórios) -->
+    <!-- MODAL: DESCARTAR LEAD -->
     <div id="discard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden backdrop-blur-sm">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
@@ -404,7 +408,7 @@
                 if (lead.etapa < 3) {
                     lead.etapa += 1;
                 } else {
-                    lead.etapa = 'sucesso'; // Concluído / Venda
+                    lead.etapa = 'sucesso';
                 }
                 saveData();
                 renderLeads();
@@ -436,6 +440,41 @@
                 closeDiscardModal();
                 renderLeads();
             }
+        }
+
+        // Função de Exportação CSV (Nome em cima / contato embaixo na estrutura ou colunas organizadas)
+        function exportarCSV() {
+            if (leads.length === 0) {
+                alert('Não há leads cadastrados para exportar.');
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // BOM para suporte a acentos no Excel
+            csvContent += "Nome do Cliente;Contato / Telefone;Status da Cadencia;Observacoes\n";
+
+            leads.forEach(l => {
+                let statusTxt = l.etapa;
+                if(l.etapa === 1) statusTxt = "1ª Tentativa";
+                if(l.etapa === 2) statusTxt = "2ª Tentativa";
+                if(l.etapa === 3) statusTxt = "3ª Tentativa";
+                if(l.etapa === 'sucesso') statusTxt = "Fechado / Sucesso";
+                if(l.etapa === 'descartado') statusTxt = `Descartado (${l.motivoDescarte})`;
+
+                const nomeFormatado = `"${l.nome.replace(/"/g, '""')}"`;
+                const telFormatado = `"${l.telefone.replace(/"/g, '""')}"`;
+                const obsFormatado = `"${(l.obs || '').replace(/"/g, '""')}"`;
+
+                csvContent += `${nomeFormatado};${telFormatado};${statusTxt};${obsFormatado}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `lista_leads_construtora_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function renderLeads() {
@@ -539,7 +578,6 @@
             });
         }
 
-        // Inicializar contadores na primeira carga
         updateDashboard();
     </script>
 </body>
