@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Construtora - Prospecção & Cadência</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Discador & CRM Metrocasa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,573 +11,370 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
+                        metrocasa: {
+                            DEFAULT: '#DC2626',
+                            dark: '#B91C1C',
+                            light: '#EF4444',
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome para Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased transition-colors duration-200">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
-    <div class="flex h-screen overflow-hidden">
-        
-        <!-- SIDEBAR / MENU LATERAL -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-800 border-r border-slate-700 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 flex flex-col">
-            <div class="flex items-center justify-between h-16 px-6 bg-slate-800 border-b border-slate-700">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                        <i class="fa-solid fa-building"></i>
-                    </div>
-                    <span class="text-lg font-bold tracking-wide">CRM Construtora</span>
+    <!-- Header / Navbar -->
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-metrocasa text-white p-2 rounded-lg font-black text-xl tracking-wider shadow">
+                    METROCASA
                 </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <span class="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 hidden sm:inline">CRM & Discador</span>
             </div>
 
-            <!-- Navegação -->
-            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="#" onclick="switchTab('dashboard')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors bg-emerald-600 text-white shadow-md">
-                    <i class="fa-solid fa-chart-pie w-6"></i> Dashboard
-                </a>
-                <a href="#" onclick="switchTab('leads')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors text-slate-300 hover:bg-slate-700 hover:text-white">
-                    <i class="fa-solid fa-address-book w-6"></i> Leads & Cadência
-                </a>
-                <a href="#" onclick="switchTab('relatorios')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors text-slate-300 hover:bg-slate-700 hover:text-white">
-                    <i class="fa-solid fa-chart-line w-6"></i> Relatórios Diários
-                </a>
-                <a href="#" onclick="switchTab('equipe')" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors text-slate-300 hover:bg-slate-700 hover:text-white">
-                    <i class="fa-solid fa-users w-6"></i> Equipe de Corretores
-                </a>
-            </nav>
-
-            <!-- Rodapé da Sidebar -->
-            <div class="p-4 border-t border-slate-700">
-                <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm transition-colors">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Alternar Tema">
                     <i id="theme-icon" class="fa-solid fa-moon"></i>
-                    <span id="theme-text">Modo Claro</span>
+                </button>
+                <button onclick="openImportModal()" class="bg-metrocasa hover:bg-metrocasa-dark text-white text-sm font-medium px-4 py-2 rounded-lg shadow transition flex items-center space-x-2">
+                    <i class="fa-solid fa-file-arrow-up"></i>
+                    <span>Importar Leads</span>
                 </button>
             </div>
-        </aside>
+        </div>
+    </header>
 
-        <!-- CONTEÚDO PRINCIPAL -->
-        <div class="flex-1 flex flex-col md:pl-64 overflow-hidden">
-            
-            <!-- Barra Superior -->
-            <header class="h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-6 z-10">
-                <div class="flex items-center space-x-4">
-                    <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-lg">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <h1 id="page-title" class="text-xl font-bold text-white">Painel Geral</h1>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="exportarCSV()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-file-arrow-down"></i>
-                        <span>Exportar Lista (CSV)</span>
-                    </button>
-                    <button onclick="openLeadModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span>Novo Lead</span>
-                    </button>
-                </div>
-            </header>
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column: Dialer & Active Lead -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Active Dialer Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                <h2 class="text-lg font-bold mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-headset text-metrocasa"></i>
+                    <span>Discador Ativo</span>
+                </h2>
 
-            <!-- Área Dinâmica -->
-            <main class="flex-1 overflow-y-auto p-6 bg-slate-900">
+                <div id="active-lead-card" class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600 mb-6 text-center">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Lead Selecionado</p>
+                    <h3 id="current-lead-name" class="font-bold text-lg text-gray-800 dark:text-white">Nenhum lead selecionado</h3>
+                    <p id="current-lead-phone" class="text-metrocasa font-mono text-base font-semibold mt-1">(00) 00000-0000</p>
+                    <span id="current-lead-status" class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">Aguardando</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <a id="btn-whatsapp" href="#" target="_blank" onclick="return checkLeadSelected()" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a id="btn-call" href="#" onclick="return checkLeadSelected()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-phone text-sm"></i>
+                        <span>Ligar</span>
+                    </a>
+                </div>
+
+                <!-- Status Update Quick Buttons -->
+                <div class="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <label class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Atualizar Status do Lead</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="updateActiveStatus('Sem Contato')" class="text-xs py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition">Sem Contato</button>
+                        <button onclick="updateActiveStatus('Em Atendimento')" class="text-xs py-2 px-3 rounded-lg border border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 font-medium transition">Em Atendimento</button>
+                        <button onclick="updateActiveStatus('Visita Agendada')" class="text-xs py-2 px-3 rounded-lg border border-blue-200 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium transition">Visita Agendada</button>
+                        <button onclick="updateActiveStatus('Proposta / Venda')" class="text-xs py-2 px-3 rounded-lg border border-green-200 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-medium transition">Proposta / Venda</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm grid grid-cols-2 gap-4 text-center">
+                <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
+                    <span id="stat-total" class="text-2xl font-bold text-gray-800 dark:text-white">0</span>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total de Leads</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
+                    <span id="stat-converted" class="text-2xl font-bold text-green-600">0</span>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Convertidos / Visita</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Leads Pipeline / Table -->
+        <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col h-full">
                 
-                <!-- ABA: DASHBOARD -->
-                <div id="tab-dashboard" class="tab-content space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-sm font-medium">Total de Leads</span>
-                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-users"></i>
-                                </div>
-                            </div>
-                            <h3 id="stat-total" class="text-3xl font-bold text-white mt-4">0</h3>
-                            <span class="text-xs text-slate-400 mt-2 block">Cadastrados no sistema</span>
-                        </div>
-                        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-sm font-medium">1ª Tentativa</span>
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-phone"></i>
-                                </div>
-                            </div>
-                            <h3 id="stat-t1" class="text-3xl font-bold text-white mt-4">0</h3>
-                            <span class="text-xs text-amber-400 mt-2 block">Aguardando 1º contato</span>
-                        </div>
-                        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-sm font-medium">2ª / 3ª Tentativa</span>
-                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-headset"></i>
-                                </div>
-                            </div>
-                            <h3 id="stat-t2t3" class="text-3xl font-bold text-white mt-4">0</h3>
-                            <span class="text-xs text-purple-400 mt-2 block">Em cadência contínua</span>
-                        </div>
-                        <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-sm font-medium">Fechamentos</span>
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-handshake"></i>
-                                </div>
-                            </div>
-                            <h3 id="stat-sucesso" class="text-3xl font-bold text-white mt-4">0</h3>
-                            <span class="text-xs text-emerald-400 mt-2 block">Vendas / Convertidos</span>
-                        </div>
+                <!-- Filters & Search Bar -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                    <div class="relative w-full sm:w-72">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+                        <input type="text" id="search-input" oninput="filterLeads()" placeholder="Buscar por nome ou telefone..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
                     </div>
 
-                    <!-- Bloco de Atalho Rápido -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-2">Processo de Atendimento da Construtora</h3>
-                        <p class="text-sm text-slate-400">O sistema segue uma rigorosa cadência de 3 dias (1ª tentativa, 2ª tentativa e 3ª tentativa). Clique em "Tratado" após cada contato para avançar o lead para o dia seguinte. Use o botão "Exportar Lista (CSV)" para gerar sua planilha de discagem rápida.</p>
-                    </div>
-                </div>
-
-                <!-- ABA: LEADS & CADÊNCIA -->
-                <div id="tab-leads" class="tab-content hidden space-y-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                        <div class="relative flex-1 w-full">
-                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                            <input type="text" id="search-input" oninput="renderLeads()" placeholder="Buscar por nome ou telefone..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <div class="flex items-center space-x-3 w-full sm:w-auto">
-                            <select id="filter-etapa" onchange="renderLeads()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                                <option value="todos">Todas as Tentativas</option>
-                                <option value="1">1ª Tentativa</option>
-                                <option value="2">2ª Tentativa</option>
-                                <option value="3">3ª Tentativa</option>
-                                <option value="sucesso">Fechado / Sucesso</option>
-                                <option value="descartado">Descartados</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Tabela de Leads -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-700/50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
-                                        <th class="py-4 px-6">Cliente / Lead</th>
-                                        <th class="py-4 px-6">Contato / Telefone</th>
-                                        <th class="py-4 px-6">Status da Cadência</th>
-                                        <th class="py-4 px-6">Observações</th>
-                                        <th class="py-4 px-6 text-center">Ações Rápidas</th>
-                                        <th class="py-4 px-6 text-right">Gerenciar</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="leads-table-body" class="divide-y divide-slate-700 text-sm">
-                                    <!-- Inserido via JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ABA: RELATÓRIOS -->
-                <div id="tab-relatorios" class="tab-content hidden space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                            <h3 class="text-lg font-bold text-white mb-4">Desempenho Diário & Prospecções</h3>
-                            <div class="space-y-4">
-                                <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-700">
-                                    <span class="text-slate-300">Prospecções Hoje</span>
-                                    <span id="rep-hoje" class="text-lg font-bold text-emerald-400">0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-700">
-                                    <span class="text-slate-300">Total na 1ª Tentativa</span>
-                                    <span id="rep-t1" class="text-lg font-bold text-amber-400">0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-700">
-                                    <span class="text-slate-300">Total na 2ª / 3ª Tentativa</span>
-                                    <span id="rep-t2t3" class="text-lg font-bold text-purple-400">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                            <h3 class="text-lg font-bold text-white mb-4">Motivos de Descarte Registrados</h3>
-                            <div class="space-y-4">
-                                <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-700">
-                                    <span class="text-slate-300">Contato Inexistente</span>
-                                    <span id="desc-inexistente" class="text-lg font-bold text-red-400">0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-700">
-                                    <span class="text-slate-300">Falta de Resposta</span>
-                                    <span id="desc-semresposta" class="text-lg font-bold text-amber-400">0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-700">
-                                    <span class="text-slate-300">Tomando Meu Tempo</span>
-                                    <span id="desc-tempoperdido" class="text-lg font-bold text-slate-400">0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ABA: EQUIPE -->
-                <div id="tab-equipe" class="tab-content hidden space-y-6">
-                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex justify-between items-center">
-                        <div>
-                            <h3 class="text-lg font-bold text-white">Corretores da Construtora</h3>
-                            <p class="text-sm text-slate-400">Cadastre os membros da equipe para distribuir os atendimentos.</p>
-                        </div>
-                        <button onclick="openCorretorModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
-                            <i class="fa-solid fa-user-plus mr-2"></i> Adicionar Corretor
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <select id="filter-status" onchange="filterLeads()" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
+                            <option value="">Todos os Status</option>
+                            <option value="Novo Lead">Novo Lead</option>
+                            <option value="Sem Contato">Sem Contato</option>
+                            <option value="Em Atendimento">Em Atendimento</option>
+                            <option value="Visita Agendada">Visita Agendada</option>
+                            <option value="Proposta / Venda">Proposta / Venda</option>
+                        </select>
+                        <button onclick="addNewLeadPrompt()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-xl text-sm font-medium transition flex items-center space-x-1 whitespace-nowrap">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Novo</span>
                         </button>
                     </div>
-                    <div id="corretores-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Inserido via JS -->
-                    </div>
                 </div>
 
-            </main>
+                <!-- Leads Table -->
+                <div class="overflow-x-auto flex-1 border border-gray-100 dark:border-gray-700 rounded-xl">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                                <th class="py-3 px-4">Nome do Lead</th>
+                                <th class="py-3 px-4">Telefone</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leads-table-body" class="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
         </div>
-    </div>
 
-    <!-- MODAL: NOVO LEAD -->
-    <div id="lead-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden backdrop-blur-sm">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-white">Cadastrar Novo Lead</h3>
-                <button onclick="closeLeadModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="lead-form" onsubmit="saveLead(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Nome do Cliente</label>
-                    <input type="text" id="lead-nome" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Telefone / WhatsApp</label>
-                    <input type="text" id="lead-telefone" placeholder="(11) 99999-9999" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Observações Iniciais</label>
-                    <textarea id="lead-obs" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500"></textarea>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700">
-                    <button type="button" onclick="closeLeadModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold transition">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-semibold text-white transition">Salvar Lead</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    </main>
 
-    <!-- MODAL: DESCARTAR LEAD -->
-    <div id="discard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden backdrop-blur-sm">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-white">Descartar Lead</h3>
-                <button onclick="closeDiscardModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- Import Modal -->
+    <div id="import-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-6 border border-gray-200 dark:border-gray-700 shadow-xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold">Importar Leads em Massa</h3>
+                <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-            <p class="text-sm text-slate-400 mb-4">Selecione o motivo obrigatório do descarte:</p>
-            <input type="hidden" id="discard-lead-id">
-            <div class="space-y-3">
-                <label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500">
-                    <input type="radio" name="motivo-descarte" value="Contato inexistente" class="text-emerald-600 focus:ring-emerald-500">
-                    <span class="text-sm text-slate-200">Contato inexistente</span>
-                </label>
-                <label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500">
-                    <input type="radio" name="motivo-descarte" value="Falta de resposta" class="text-emerald-600 focus:ring-emerald-500">
-                    <span class="text-sm text-slate-200">Falta de resposta</span>
-                </label>
-                <label class="flex items-center space-x-3 p-3 bg-slate-900 rounded-xl border border-slate-700 cursor-pointer hover:border-emerald-500">
-                    <input type="radio" name="motivo-descarte" value="Tomando meu tempo" class="text-emerald-600 focus:ring-emerald-500">
-                    <span class="text-sm text-slate-200">Tomando meu tempo</span>
-                </label>
-            </div>
-            <div class="flex justify-end space-x-3 pt-6 border-t border-slate-700 mt-6">
-                <button type="button" onclick="closeDiscardModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold transition">Cancelar</button>
-                <button type="button" onclick="confirmDiscard()" class="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-xl text-sm font-semibold text-white transition">Confirmar Descarte</button>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Cole abaixo os dados dos leads no formato <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">Nome, Telefone</code> (um por linha):</p>
+            <textarea id="import-textarea" rows="6" placeholder="Exemplo:&#10;Carlos Silva, 11988887777&#10;Ana Souza, 11977776666" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeImportModal()" class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition">Cancelar</button>
+                <button onclick="processImport()" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-5 py-2 rounded-xl text-sm font-medium shadow transition">Importar Leads</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: NOVO CORRETOR -->
-    <div id="corretor-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden backdrop-blur-sm">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-white">Cadastrar Corretor</h3>
-                <button onclick="closeCorretorModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form onsubmit="saveCorretor(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Nome do Corretor</label>
-                    <input type="text" id="corretor-nome" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">E-mail</label>
-                    <input type="email" id="corretor-email" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700">
-                    <button type="button" onclick="closeCorretorModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold transition">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-semibold text-white transition">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- SCRIPT DE FUNCIONAMENTO DO CRM -->
+    <!-- Application Script -->
     <script>
-        let leads = JSON.parse(localStorage.getItem('crm_leads')) || [
-            { id: 1, nome: 'Carlos Eduardo', telefone: '11988887777', etapa: 1, obs: 'Interessado em apto 2 dorms', dataCriacao: '2026-09-14' },
-            { id: 2, nome: 'Mariana Souza', telefone: '11977776666', etapa: 2, obs: 'Pediu simulação de financiamento', dataCriacao: '2026-09-13' }
+        // Initial Demo Leads if localStorage is empty
+        const defaultLeads = [
+            { id: 1, name: 'Gabriel de Santana', phone: '11999998888', status: 'Novo Lead' },
+            { id: 2, name: 'Mariana Santos', phone: '11987654321', status: 'Em Atendimento' },
+            { id: 3, name: 'Roberto Almeida', phone: '11912345678', status: 'Visita Agendada' }
         ];
 
-        let corretores = JSON.parse(localStorage.getItem('crm_corretores')) || [
-            { id: 1, nome: 'Gabriel Liberato', email: 'gabriel@construtora.com' }
-        ];
+        let leads = JSON.parse(localStorage.getItem('metrocasa_leads')) || defaultLeads;
+        let activeLeadId = null;
 
-        function saveData() {
-            localStorage.setItem('crm_leads', JSON.stringify(leads));
-            localStorage.setItem('crm_corretores', JSON.stringify(corretores));
-            updateDashboard();
+        function saveLeads() {
+            localStorage.setItem('metrocasa_leads', JSON.stringify(leads));
+            renderLeads();
+            updateStats();
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-link').forEach(el => {
-                el.classList.remove('bg-emerald-600', 'text-white', 'shadow-md');
-                el.classList.add('text-slate-300', 'hover:bg-slate-700', 'hover:text-white');
+        function renderLeads(filteredList = null) {
+            const tbody = document.getElementById('leads-table-body');
+            tbody.innerHTML = '';
+            const listToRender = filteredList || leads;
+
+            if (listToRender.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-400">Nenhum lead encontrado.</td></tr>`;
+                return;
+            }
+
+            listToRender.forEach(lead => {
+                const tr = document.createElement('tr');
+                tr.className = `hover:bg-gray-50 dark:hover:bg-gray-700/30 transition ${activeLeadId === lead.id ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`;
+                
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-medium text-gray-800 dark:text-white">${lead.name}</td>
+                    <td class="py-3 px-4 font-mono text-gray-600 dark:text-gray-300">${lead.phone}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusBadgeClass(lead.status)}">${lead.status}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right space-x-2">
+                        <button onclick="selectLead(${lead.id})" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow transition">
+                            Selecionar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
-            event.currentTarget.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
-            event.currentTarget.classList.remove('text-slate-300', 'hover:bg-slate-700', 'hover:text-white');
-
-            const titles = { 'dashboard': 'Painel Geral', 'leads': 'Leads & Cadência', 'relatorios': 'Relatórios Diários', 'equipe': 'Equipe de Corretores' };
-            document.getElementById('page-title').innerText = titles[tabId];
-            
-            if(tabId === 'leads') renderLeads();
-            if(tabId === 'relatorios') updateRelatorios();
-            if(tabId === 'equipe') renderCorretores();
         }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'Novo Lead': return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+                case 'Sem Contato': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+                case 'Em Atendimento': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
+                case 'Visita Agendada': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+                case 'Proposta / Venda': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+                default: return 'bg-gray-100 text-gray-600';
+            }
+        }
+
+        function selectLead(id) {
+            const lead = leads.find(l => l.id === id);
+            if (!lead) return;
+            activeLeadId = lead.id;
+
+            document.getElementById('current-lead-name').innerText = lead.name;
+            const cleanPhone = lead.phone.replace(/\D/g, '');
+            document.getElementById('current-lead-phone').innerText = lead.phone;
+            document.getElementById('current-lead-status').innerText = lead.status;
+            document.getElementById('current-lead-status').className = `inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(lead.status)}`;
+
+            // Enable Action Links
+            const btnWhatsapp = document.getElementById('btn-whatsapp');
+            const btnCall = document.getElementById('btn-call');
+
+            btnWhatsapp.href = `https://wa.me/55${cleanPhone}?text=Olá%20${encodeURIComponent(lead.name)},%20tudo%20bem?%20Aqui%20é%20da%20Metrocasa.`;
+            btnWhatsapp.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            btnCall.href = `tel:+55${cleanPhone}`;
+            btnCall.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            renderLeads();
+        }
+
+        function checkLeadSelected() {
+            if (!activeLeadId) {
+                alert('Por favor, selecione um lead na tabela primeiro.');
+                return false;
+            }
+            return true;
+        }
+
+        function updateActiveStatus(newStatus) {
+            if (!activeLeadId) {
+                alert('Nenhum lead ativo selecionado.');
+                return;
+            }
+            const lead = leads.find(l => l.id === activeLeadId);
+            if (lead) {
+                lead.status = newStatus;
+                saveLeads();
+                selectLead(activeLeadId);
+            }
+        }
+
+        function filterLeads() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+
+            const filtered = leads.filter(lead => {
+                const matchesQuery = lead.name.toLowerCase().includes(query) || lead.phone.includes(query);
+                const matchesStatus = statusFilter === '' || lead.status === statusFilter;
+                return matchesQuery && matchesStatus;
+            });
+
+            renderLeads(filtered);
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = leads.length;
+            const converted = leads.filter(l => l.status === 'Visita Agendada' || l.status === 'Proposta / Venda').length;
+            document.getElementById('stat-converted').innerText = converted;
+        }
+
+        function addNewLeadPrompt() {
+            const name = prompt('Nome do novo lead:');
+            if (!name) return;
+            const phone = prompt('Telefone com DDD (ex: 11999998888):');
+            if (!phone) return;
+
+            const newLead = {
+                id: Date.now(),
+                name: name.trim(),
+                phone: phone.trim(),
+                status: 'Novo Lead'
+            };
+
+            leads.unshift(newLead);
+            saveLeads();
+            selectLead(newLead.id);
+        }
+
+        function openImportModal() {
+            document.getElementById('import-modal').classList.remove('hidden');
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').classList.add('hidden');
+            document.getElementById('import-textarea').value = '';
+        }
+
+        function processImport() {
+            const text = document.getElementById('import-textarea').value;
+            const lines = text.split('\n');
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                const parts = line.split(',');
+                if (parts.length >= 2) {
+                    const name = parts[0].trim();
+                    const phone = parts[1].trim();
+                    if (name && phone) {
+                        leads.push({
+                            id: Date.now() + Math.random(),
+                            name,
+                            phone,
+                            status: 'Novo Lead'
+                        });
+                        addedCount++;
+                    }
+                }
+            });
+
+            if (addedCount > 0) {
+                saveLeads();
+                closeImportModal();
+                alert(`${addedCount} leads importados com sucesso!`);
+            } else {
+                alert('Nenhum lead válido encontrado. Verifique o formato (Nome, Telefone por linha).');
+            }
         }
 
         function toggleDarkMode() {
             const html = document.documentElement;
-            html.classList.toggle('dark');
-            const isDark = html.classList.contains('dark');
-            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-            document.getElementById('theme-text').innerText = isDark ? 'Modo Claro' : 'Modo Escuro';
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                icon.className = 'fa-solid fa-moon';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                icon.className = 'fa-solid fa-sun';
+            }
         }
 
-        // Modais
-        function openLeadModal() { document.getElementById('lead-modal').classList.remove('hidden'); }
-        function closeLeadModal() { document.getElementById('lead-modal').classList.add('hidden'); document.getElementById('lead-form').reset(); }
-        function openCorretorModal() { document.getElementById('corretor-modal').classList.remove('hidden'); }
-        function closeCorretorModal() { document.getElementById('corretor-modal').classList.add('hidden'); }
-
-        function saveLead(e) {
-            e.preventDefault();
-            const novo = {
-                id: Date.now(),
-                nome: document.getElementById('lead-nome').value,
-                telefone: document.getElementById('lead-telefone').value,
-                etapa: 1,
-                obs: document.getElementById('lead-obs').value,
-                dataCriacao: new Date().toISOString().split('T')[0]
-            };
-            leads.push(novo);
-            saveData();
-            closeLeadModal();
+        // Initialize Theme & Stats on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+            }
             renderLeads();
-        }
-
-        function avancarTentativa(id) {
-            const lead = leads.find(l => l.id === id);
-            if (lead) {
-                if (lead.etapa < 3) {
-                    lead.etapa += 1;
-                } else {
-                    lead.etapa = 'sucesso';
-                }
-                saveData();
-                renderLeads();
-            }
-        }
-
-        function abrirDescarteModal(id) {
-            document.getElementById('discard-lead-id').value = id;
-            document.getElementById('discard-modal').classList.remove('hidden');
-        }
-
-        function closeDiscardModal() {
-            document.getElementById('discard-modal').classList.add('hidden');
-            document.querySelectorAll('input[name="motivo-descarte"]').forEach(r => r.checked = false);
-        }
-
-        function confirmDiscard() {
-            const id = document.getElementById('discard-lead-id').value;
-            const selected = document.querySelector('input[name="motivo-descarte"]:checked');
-            if (!selected) {
-                alert('Por favor, selecione um motivo de descarte.');
-                return;
-            }
-            const lead = leads.find(l => l.id == id);
-            if (lead) {
-                lead.etapa = 'descartado';
-                lead.motivoDescarte = selected.value;
-                saveData();
-                closeDiscardModal();
-                renderLeads();
-            }
-        }
-
-        // Função de Exportação CSV (Nome em cima / contato embaixo na estrutura ou colunas organizadas)
-        function exportarCSV() {
-            if (leads.length === 0) {
-                alert('Não há leads cadastrados para exportar.');
-                return;
-            }
-
-            let csvContent = "\uFEFF"; // BOM para suporte a acentos no Excel
-            csvContent += "Nome do Cliente;Contato / Telefone;Status da Cadencia;Observacoes\n";
-
-            leads.forEach(l => {
-                let statusTxt = l.etapa;
-                if(l.etapa === 1) statusTxt = "1ª Tentativa";
-                if(l.etapa === 2) statusTxt = "2ª Tentativa";
-                if(l.etapa === 3) statusTxt = "3ª Tentativa";
-                if(l.etapa === 'sucesso') statusTxt = "Fechado / Sucesso";
-                if(l.etapa === 'descartado') statusTxt = `Descartado (${l.motivoDescarte})`;
-
-                const nomeFormatado = `"${l.nome.replace(/"/g, '""')}"`;
-                const telFormatado = `"${l.telefone.replace(/"/g, '""')}"`;
-                const obsFormatado = `"${(l.obs || '').replace(/"/g, '""')}"`;
-
-                csvContent += `${nomeFormatado};${telFormatado};${statusTxt};${obsFormatado}\n`;
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', `lista_leads_construtora_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function renderLeads() {
-            const tbody = document.getElementById('leads-table-body');
-            const search = document.getElementById('search-input').value.toLowerCase();
-            const filterEtapa = document.getElementById('filter-etapa').value;
-            
-            tbody.innerHTML = '';
-
-            const filtered = leads.filter(l => {
-                const matchSearch = l.nome.toLowerCase().includes(search) || l.telefone.includes(search);
-                const matchEtapa = filterEtapa === 'todos' || l.etapa == filterEtapa || (filterEtapa === 'sucesso' && l.etapa === 'sucesso') || (filterEtapa === 'descartado' && l.etapa === 'descartado');
-                return matchSearch && matchEtapa;
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">Nenhum lead encontrado.</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(lead => {
-                let badgeEtapa = '';
-                if(lead.etapa === 1) badgeEtapa = `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-lg text-xs font-semibold">1ª Tentativa</span>`;
-                else if(lead.etapa === 2) badgeEtapa = `<span class="px-2.5 py-1 bg-purple-500/10 text-purple-400 rounded-lg text-xs font-semibold">2ª Tentativa</span>`;
-                else if(lead.etapa === 3) badgeEtapa = `<span class="px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-xs font-semibold">3ª Tentativa</span>`;
-                else if(lead.etapa === 'sucesso') badgeEtapa = `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-semibold">Fechado / Sucesso</span>`;
-                else if(lead.etapa === 'descartado') badgeEtapa = `<span class="px-2.5 py-1 bg-red-500/10 text-red-400 rounded-lg text-xs font-semibold">Descartado (${lead.motivoDescarte || ''})</span>`;
-
-                const cleanPhone = lead.telefone.replace(/\D/g, '');
-                
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-700/30 transition">
-                        <td class="py-4 px-6 font-medium text-white">${lead.nome}</td>
-                        <td class="py-4 px-6 text-slate-300">${lead.telefone}</td>
-                        <td class="py-4 px-6">${badgeEtapa}</td>
-                        <td class="py-4 px-6 text-slate-400 text-xs">${lead.obs || '-'}</td>
-                        <td class="py-4 px-6 text-center space-x-2">
-                            <a href="https://wa.me/55${cleanPhone}" target="_blank" class="inline-flex items-center justify-center w-9 h-9 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl transition" title="Abrir WhatsApp">
-                                <i class="fa-brands fa-whatsapp"></i>
-                            </a>
-                            <a href="tel:${cleanPhone}" class="inline-flex items-center justify-center w-9 h-9 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white rounded-xl transition" title="Ligar diretamente">
-                                <i class="fa-solid fa-phone"></i>
-                            </a>
-                        </td>
-                        <td class="py-4 px-6 text-right space-x-2">
-                            ${lead.etapa !== 'descartado' && lead.etapa !== 'sucesso' ? `
-                                <button onclick="avancarTentativa(${lead.id})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-semibold transition">Tratado</button>
-                                <button onclick="abrirDescarteModal(${lead.id})" class="px-3 py-1.5 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-xs rounded-xl font-semibold transition">Descartar</button>
-                            ` : '-'}
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function updateDashboard() {
-            document.getElementById('stat-total').innerText = leads.length;
-            document.getElementById('stat-t1').innerText = leads.filter(l => l.etapa === 1).length;
-            document.getElementById('stat-t2t3').innerText = leads.filter(l => l.etapa === 2 || l.etapa === 3).length;
-            document.getElementById('stat-sucesso').innerText = leads.filter(l => l.etapa === 'sucesso').length;
-        }
-
-        function updateRelatorios() {
-            const hojeStr = new Date().toISOString().split('T')[0];
-            document.getElementById('rep-hoje').innerText = leads.filter(l => l.dataCriacao === hojeStr).length;
-            document.getElementById('rep-t1').innerText = leads.filter(l => l.etapa === 1).length;
-            document.getElementById('rep-t2t3').innerText = leads.filter(l => l.etapa === 2 || l.etapa === 3).length;
-
-            document.getElementById('desc-inexistente').innerText = leads.filter(l => l.motivoDescarte === 'Contato inexistente').length;
-            document.getElementById('desc-semresposta').innerText = leads.filter(l => l.motivoDescarte === 'Falta de resposta').length;
-            document.getElementById('desc-tempoperdido').innerText = leads.filter(l => l.motivoDescarte === 'Tomando meu tempo').length;
-        }
-
-        function saveCorretor(e) {
-            e.preventDefault();
-            corretores.push({
-                id: Date.now(),
-                nome: document.getElementById('corretor-nome').value,
-                email: document.getElementById('corretor-email').value
-            });
-            saveData();
-            closeCorretorModal();
-            renderCorretores();
-        }
-
-        function renderCorretores() {
-            const grid = document.getElementById('corretores-grid');
-            grid.innerHTML = '';
-            corretores.forEach(c => {
-                grid.innerHTML += `
-                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
-                            ${c.nome.charAt(0)}
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-white">${c.nome}</h4>
-                            <p class="text-xs text-slate-400">${c.email}</p>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        updateDashboard();
+            updateStats();
+        });
     </script>
 </body>
 </html>
