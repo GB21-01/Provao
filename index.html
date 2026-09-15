@@ -23,156 +23,256 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex font-sans transition-colors duration-200">
 
-    <!-- Header / Navbar -->
-    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-metrocasa text-white p-2 rounded-lg font-black text-xl tracking-wider shadow">
-                    METROCASA
+    <!-- Sidebar / Menu Lateral -->
+    <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col fixed inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 shadow-lg lg:shadow-none">
+        <!-- Logo Header -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700 space-x-3">
+            <div class="bg-metrocasa text-white px-2.5 py-1.5 rounded-lg font-black text-lg tracking-wider shadow">
+                METROCASA
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-400">CRM Pro</span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+            <a href="#" onclick="switchTab('leads')" id="nav-leads" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold bg-metrocasa text-white shadow-sm transition">
+                <i class="fa-solid fa-address-book w-5"></i>
+                <span>Gestão de Leads</span>
+            </a>
+            <a href="#" onclick="switchTab('dialer')" id="nav-dialer" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                <i class="fa-solid fa-headset w-5"></i>
+                <span>Discador Ativo</span>
+            </a>
+            <a href="#" onclick="switchTab('analytics')" id="nav-analytics" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                <i class="fa-solid fa-chart-line w-5"></i>
+                <span>Relatórios & Metas</span>
+            </a>
+            <a href="#" onclick="switchTab('settings')" id="nav-settings" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                <i class="fa-solid fa-gear w-5"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer / User Info -->
+        <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-3 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
+                <div class="bg-metrocasa/10 text-metrocasa font-bold w-9 h-9 rounded-full flex items-center justify-center text-sm">
+                    GS
                 </div>
-                <span class="text-sm font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 hidden sm:inline">CRM & Discador</span>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold truncate">Gabriel Liberato</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate">Corretor Metrocasa</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="flex-1 flex flex-col lg:pl-64 min-w-0">
+        <!-- Top Navbar -->
+        <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 sticky top-0 z-40 flex items-center justify-between px-4 sm:px-8">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 p-2 rounded-lg">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <h1 id="page-title" class="text-base sm:text-lg font-bold">Gestão de Leads</h1>
             </div>
 
             <div class="flex items-center space-x-3">
-                <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Alternar Tema">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Alternar Tema">
                     <i id="theme-icon" class="fa-solid fa-moon"></i>
                 </button>
-                <button onclick="openImportModal()" class="bg-metrocasa hover:bg-metrocasa-dark text-white text-sm font-medium px-4 py-2 rounded-lg shadow transition flex items-center space-x-2">
+                <button onclick="openImportModal()" class="bg-metrocasa hover:bg-metrocasa-dark text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl shadow transition flex items-center space-x-2">
                     <i class="fa-solid fa-file-arrow-up"></i>
-                    <span>Importar Leads</span>
+                    <span class="hidden sm:inline">Importar Leads</span>
                 </button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Left Column: Dialer & Active Lead -->
-        <div class="lg:col-span-1 space-y-6">
-            <!-- Active Dialer Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-                <h2 class="text-lg font-bold mb-4 flex items-center space-x-2">
-                    <i class="fa-solid fa-headset text-metrocasa"></i>
-                    <span>Discador Ativo</span>
-                </h2>
-
-                <div id="active-lead-card" class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-dashed border-gray-300 dark:border-gray-600 mb-6 text-center">
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Lead Selecionado</p>
-                    <h3 id="current-lead-name" class="font-bold text-lg text-gray-800 dark:text-white">Nenhum lead selecionado</h3>
-                    <p id="current-lead-phone" class="text-metrocasa font-mono text-base font-semibold mt-1">(00) 00000-0000</p>
-                    <span id="current-lead-status" class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">Aguardando</span>
+        <!-- Main Content Area -->
+        <main class="p-4 sm:p-8 flex-1 max-w-7xl w-full mx-auto">
+            
+            <!-- TAB 1: LEADS & PIPELINE (Default) -->
+            <div id="tab-content-leads" class="space-y-6">
+                <!-- Stats Row -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-total" class="text-2xl font-black text-gray-800 dark:text-white">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Total de Leads</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-attendance" class="text-2xl font-black text-yellow-600">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Em Atendimento</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-visits" class="text-2xl font-black text-blue-600">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Visitas Agendadas</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-converted" class="text-2xl font-black text-green-600">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Propostas / Vendas</p>
+                    </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <a id="btn-whatsapp" href="#" target="_blank" onclick="return checkLeadSelected()" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
-                        <i class="fa-brands fa-whatsapp text-lg"></i>
-                        <span>WhatsApp</span>
-                    </a>
-                    <a id="btn-call" href="#" onclick="return checkLeadSelected()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
-                        <i class="fa-solid fa-phone text-sm"></i>
-                        <span>Ligar</span>
-                    </a>
-                </div>
+                <!-- Table Container Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="relative w-full sm:w-80">
+                            <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-sm"></i>
+                            <input type="text" id="search-input" oninput="filterLeads()" placeholder="Pesquisar por nome ou telefone..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
+                        </div>
 
-                <!-- Status Update Quick Buttons -->
-                <div class="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                    <label class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Atualizar Status do Lead</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="updateActiveStatus('Sem Contato')" class="text-xs py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition">Sem Contato</button>
-                        <button onclick="updateActiveStatus('Em Atendimento')" class="text-xs py-2 px-3 rounded-lg border border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 font-medium transition">Em Atendimento</button>
-                        <button onclick="updateActiveStatus('Visita Agendada')" class="text-xs py-2 px-3 rounded-lg border border-blue-200 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium transition">Visita Agendada</button>
-                        <button onclick="updateActiveStatus('Proposta / Venda')" class="text-xs py-2 px-3 rounded-lg border border-green-200 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-medium transition">Proposta / Venda</button>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto">
+                            <select id="filter-status" onchange="filterLeads()" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
+                                <option value="">Todos os Status</option>
+                                <option value="Novo Lead">Novo Lead</option>
+                                <option value="Sem Contato">Sem Contato</option>
+                                <option value="Em Atendimento">Em Atendimento</option>
+                                <option value="Visita Agendada">Visita Agendada</option>
+                                <option value="Proposta / Venda">Proposta / Venda</option>
+                            </select>
+                            <button onclick="addNewLeadPrompt()" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition flex items-center space-x-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Novo Lead</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Leads Table -->
+                    <div class="overflow-x-auto border border-gray-100 dark:border-gray-700 rounded-xl">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-700/50 text-xs font-bold uppercase text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                                    <th class="py-3.5 px-4">Nome do Lead</th>
+                                    <th class="py-3.5 px-4">Telefone</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Ação Rápida</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-table-body" class="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm grid grid-cols-2 gap-4 text-center">
-                <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
-                    <span id="stat-total" class="text-2xl font-bold text-gray-800 dark:text-white">0</span>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total de Leads</p>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
-                    <span id="stat-converted" class="text-2xl font-bold text-green-600">0</span>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Convertidos / Visita</p>
-                </div>
-            </div>
-        </div>
+            <!-- TAB 2: DISCADOR ATIVO -->
+            <div id="tab-content-dialer" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Active Lead Panel -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-6">
+                        <h2 class="text-lg font-bold flex items-center space-x-2">
+                            <i class="fa-solid fa-headset text-metrocasa"></i>
+                            <span>Central de Chamadas & WhatsApp</span>
+                        </h2>
 
-        <!-- Right Column: Leads Pipeline / Table -->
-        <div class="lg:col-span-2 space-y-4">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col h-full">
-                
-                <!-- Filters & Search Bar -->
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                    <div class="relative w-full sm:w-72">
-                        <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
-                        <input type="text" id="search-input" oninput="filterLeads()" placeholder="Buscar por nome ou telefone..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
+                        <div id="active-lead-card" class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6 border-2 border-dashed border-gray-200 dark:border-gray-600 text-center">
+                            <p class="text-xs uppercase font-bold tracking-widest text-gray-400 mb-2">Lead em Foco</p>
+                            <h3 id="current-lead-name" class="font-black text-xl text-gray-800 dark:text-white">Nenhum lead selecionado</h3>
+                            <p id="current-lead-phone" class="text-metrocasa font-mono text-lg font-bold mt-1">(00) 00000-0000</p>
+                            <span id="current-lead-status" class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">Aguardando Seleção</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <a id="btn-whatsapp" href="#" target="_blank" onclick="return checkLeadSelected()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
+                                <i class="fa-brands fa-whatsapp text-xl"></i>
+                                <span>Enviar WhatsApp</span>
+                            </a>
+                            <a id="btn-call" href="#" onclick="return checkLeadSelected()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
+                                <i class="fa-solid fa-phone"></i>
+                                <span>Ligar Agora</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="flex items-center space-x-2 w-full sm:w-auto">
-                        <select id="filter-status" onchange="filterLeads()" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
-                            <option value="">Todos os Status</option>
-                            <option value="Novo Lead">Novo Lead</option>
-                            <option value="Sem Contato">Sem Contato</option>
-                            <option value="Em Atendimento">Em Atendimento</option>
-                            <option value="Visita Agendada">Visita Agendada</option>
-                            <option value="Proposta / Venda">Proposta / Venda</option>
-                        </select>
-                        <button onclick="addNewLeadPrompt()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-xl text-sm font-medium transition flex items-center space-x-1 whitespace-nowrap">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Novo</span>
+                    <!-- Pipeline Quick Status Update -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                        <h3 class="font-bold text-base">Atualizar Status do Lead Ativo</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Modifique o andamento da negociação instantaneamente após o contato:</p>
+                        <div class="grid grid-cols-1 gap-2.5 pt-2">
+                            <button onclick="updateActiveStatus('Sem Contato')" class="py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-sm text-left flex items-center justify-between transition">
+                                <span>Sem Contato / Caixa Postal</span>
+                                <i class="fa-solid fa-phone-slash text-gray-400"></i>
+                            </button>
+                            <button onclick="updateActiveStatus('Em Atendimento')" class="py-3 px-4 rounded-xl border border-yellow-200 bg-yellow-50/50 dark:bg-yellow-900/10 text-yellow-700 dark:text-yellow-400 font-semibold text-sm text-left flex items-center justify-between transition">
+                                <span>Em Atendimento (Qualificado)</span>
+                                <i class="fa-solid fa-comments text-yellow-600"></i>
+                            </button>
+                            <button onclick="updateActiveStatus('Visita Agendada')" class="py-3 px-4 rounded-xl border border-blue-200 bg-blue-50/50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 font-semibold text-sm text-left flex items-center justify-between transition">
+                                <span>Visita Agendada no Plantão</span>
+                                <i class="fa-solid fa-calendar-check text-blue-600"></i>
+                            </button>
+                            <button onclick="updateActiveStatus('Proposta / Venda')" class="py-3 px-4 rounded-xl border border-green-200 bg-green-50/50 dark:bg-green-900/10 text-green-700 dark:text-green-400 font-semibold text-sm text-left flex items-center justify-between transition">
+                                <span>Proposta / Venda Concluída</span>
+                                <i class="fa-solid fa-handshake text-green-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: RELATÓRIOS -->
+            <div id="tab-content-analytics" class="space-y-6 hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                    <h2 class="text-lg font-bold">Desempenho de Vendas Metrocasa</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Resumo geral das conversões obtidas através dos seus contatos cadastrados.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center">
+                            <span id="report-conversion-rate" class="text-3xl font-black text-metrocasa">0%</span>
+                            <p class="text-xs text-gray-500 mt-1 font-semibold uppercase">Taxa de Conversão (Visitas/Vendas)</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center">
+                            <span id="report-active-contacts" class="text-3xl font-black text-blue-600">0</span>
+                            <p class="text-xs text-gray-500 mt-1 font-semibold uppercase">Leads em Andamento</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center">
+                            <span id="report-lost-rate" class="text-3xl font-black text-gray-600">0</span>
+                            <p class="text-xs text-gray-500 mt-1 font-semibold uppercase">Sem Contato Registrado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: CONFIGURAÇÕES -->
+            <div id="tab-content-settings" class="space-y-6 hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                    <h2 class="text-lg font-bold">Configurações do Sistema</h2>
+                    <p class="text-sm text-gray-500">Gerencie seus dados e armazenamento local do CRM.</p>
+                    <div class="pt-2">
+                        <button onclick="resetData()" class="bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-sm font-semibold px-4 py-2.5 rounded-xl transition">
+                            Restaurar Leads Padrão
                         </button>
                     </div>
                 </div>
-
-                <!-- Leads Table -->
-                <div class="overflow-x-auto flex-1 border border-gray-100 dark:border-gray-700 rounded-xl">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
-                                <th class="py-3 px-4">Nome do Lead</th>
-                                <th class="py-3 px-4">Telefone</th>
-                                <th class="py-3 px-4">Status</th>
-                                <th class="py-3 px-4 text-right">Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leads-table-body" class="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
-                            <!-- Dynamic Rows -->
-                        </tbody>
-                    </table>
-                </div>
-
             </div>
-        </div>
 
-    </main>
+        </main>
+    </div>
 
     <!-- Import Modal -->
     <div id="import-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-6 border border-gray-200 dark:border-gray-700 shadow-xl space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-bold">Importar Leads em Massa</h3>
-                <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Cole abaixo os dados dos leads no formato <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">Nome, Telefone</code> (um por linha):</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Cole abaixo os dados no formato <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">Nome, Telefone</code> (um lead por linha):</p>
             <textarea id="import-textarea" rows="6" placeholder="Exemplo:&#10;Carlos Silva, 11988887777&#10;Ana Souza, 11977776666" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
             <div class="flex justify-end space-x-3 pt-2">
-                <button onclick="closeImportModal()" class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition">Cancelar</button>
-                <button onclick="processImport()" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-5 py-2 rounded-xl text-sm font-medium shadow transition">Importar Leads</button>
+                <button onclick="closeImportModal()" class="px-4 py-2 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600 hover:bg-gray-50 transition">Cancelar</button>
+                <button onclick="processImport()" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-5 py-2 rounded-xl text-sm font-semibold shadow transition">Importar</button>
             </div>
         </div>
     </div>
 
-    <!-- Application Script -->
+    <!-- Application JavaScript -->
     <script>
-        // Initial Demo Leads if localStorage is empty
         const defaultLeads = [
             { id: 1, name: 'Gabriel de Santana', phone: '11999998888', status: 'Novo Lead' },
             { id: 2, name: 'Mariana Santos', phone: '11987654321', status: 'Em Atendimento' },
@@ -186,6 +286,32 @@
             localStorage.setItem('metrocasa_leads', JSON.stringify(leads));
             renderLeads();
             updateStats();
+        }
+
+        function switchTab(tabId) {
+            // Hide all tabs
+            ['leads', 'dialer', 'analytics', 'settings'].forEach(t => {
+                document.getElementById(`tab-content-${t}`).classList.add('hidden');
+                const nav = document.getElementById(`nav-${t}`);
+                nav.className = "nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition";
+            });
+
+            // Show target tab
+            document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            activeNav.className = "nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold bg-metrocasa text-white shadow-sm transition";
+
+            // Update title
+            const titles = { leads: 'Gestão de Leads', dialer: 'Discador Ativo', analytics: 'Relatórios & Metas', settings: 'Configurações' };
+            document.getElementById('page-title').innerText = titles[tabId];
+
+            // Close mobile sidebar if open
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
         }
 
         function renderLeads(filteredList = null) {
@@ -203,14 +329,14 @@
                 tr.className = `hover:bg-gray-50 dark:hover:bg-gray-700/30 transition ${activeLeadId === lead.id ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`;
                 
                 tr.innerHTML = `
-                    <td class="py-3 px-4 font-medium text-gray-800 dark:text-white">${lead.name}</td>
-                    <td class="py-3 px-4 font-mono text-gray-600 dark:text-gray-300">${lead.phone}</td>
-                    <td class="py-3 px-4">
-                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusBadgeClass(lead.status)}">${lead.status}</span>
+                    <td class="py-3.5 px-4 font-semibold text-gray-800 dark:text-white">${lead.name}</td>
+                    <td class="py-3.5 px-4 font-mono text-gray-600 dark:text-gray-300">${lead.phone}</td>
+                    <td class="py-3.5 px-4">
+                        <span class="inline-block px-2.5 py-1 rounded-full text-xs font-bold ${getStatusBadgeClass(lead.status)}">${lead.status}</span>
                     </td>
-                    <td class="py-3 px-4 text-right space-x-2">
-                        <button onclick="selectLead(${lead.id})" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow transition">
-                            Selecionar
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="selectLeadAndOpenDialer(${lead.id})" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition">
+                            <i class="fa-solid fa-headset mr-1"></i> Atender
                         </button>
                     </td>
                 `;
@@ -229,6 +355,11 @@
             }
         }
 
+        function selectLeadAndOpenDialer(id) {
+            selectLead(id);
+            switchTab('dialer');
+        }
+
         function selectLead(id) {
             const lead = leads.find(l => l.id === id);
             if (!lead) return;
@@ -238,9 +369,8 @@
             const cleanPhone = lead.phone.replace(/\D/g, '');
             document.getElementById('current-lead-phone').innerText = lead.phone;
             document.getElementById('current-lead-status').innerText = lead.status;
-            document.getElementById('current-lead-status').className = `inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(lead.status)}`;
+            document.getElementById('current-lead-status').className = `inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadgeClass(lead.status)}`;
 
-            // Enable Action Links
             const btnWhatsapp = document.getElementById('btn-whatsapp');
             const btnCall = document.getElementById('btn-call');
 
@@ -255,7 +385,7 @@
 
         function checkLeadSelected() {
             if (!activeLeadId) {
-                alert('Por favor, selecione um lead na tabela primeiro.');
+                alert('Por favor, selecione um lead primeiro.');
                 return false;
             }
             return true;
@@ -271,6 +401,7 @@
                 lead.status = newStatus;
                 saveLeads();
                 selectLead(activeLeadId);
+                alert(`Status atualizado para: ${newStatus}`);
             }
         }
 
@@ -288,9 +419,22 @@
         }
 
         function updateStats() {
-            document.getElementById('stat-total').innerText = leads.length;
-            const converted = leads.filter(l => l.status === 'Visita Agendada' || l.status === 'Proposta / Venda').length;
+            const total = leads.length;
+            const attendance = leads.filter(l => l.status === 'Em Atendimento').length;
+            const visits = leads.filter(l => l.status === 'Visita Agendada').length;
+            const converted = leads.filter(l => l.status === 'Proposta / Venda').length;
+            const lost = leads.filter(l => l.status === 'Sem Contato').length;
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-attendance').innerText = attendance;
+            document.getElementById('stat-visits').innerText = visits;
             document.getElementById('stat-converted').innerText = converted;
+
+            // Analytics reports
+            document.getElementById('report-active-contacts').innerText = attendance + visits;
+            document.getElementById('report-lost-rate').innerText = lost;
+            const rate = total > 0 ? Math.round(((visits + converted) / total) * 100) : 0;
+            document.getElementById('report-conversion-rate').innerText = rate + '%';
         }
 
         function addNewLeadPrompt() {
@@ -308,17 +452,11 @@
 
             leads.unshift(newLead);
             saveLeads();
-            selectLead(newLead.id);
+            selectLeadAndOpenDialer(newLead.id);
         }
 
-        function openImportModal() {
-            document.getElementById('import-modal').classList.remove('hidden');
-        }
-
-        function closeImportModal() {
-            document.getElementById('import-modal').classList.add('hidden');
-            document.getElementById('import-textarea').value = '';
-        }
+        function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
+        function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); document.getElementById('import-textarea').value = ''; }
 
         function processImport() {
             const text = document.getElementById('import-textarea').value;
@@ -331,12 +469,7 @@
                     const name = parts[0].trim();
                     const phone = parts[1].trim();
                     if (name && phone) {
-                        leads.push({
-                            id: Date.now() + Math.random(),
-                            name,
-                            phone,
-                            status: 'Novo Lead'
-                        });
+                        leads.push({ id: Date.now() + Math.random(), name, phone, status: 'Novo Lead' });
                         addedCount++;
                     }
                 }
@@ -347,7 +480,16 @@
                 closeImportModal();
                 alert(`${addedCount} leads importados com sucesso!`);
             } else {
-                alert('Nenhum lead válido encontrado. Verifique o formato (Nome, Telefone por linha).');
+                alert('Formato inválido. Utilize Nome, Telefone por linha.');
+            }
+        }
+
+        function resetData() {
+            if (confirm('Deseja realmente restaurar os leads padrão?')) {
+                leads = defaultLeads;
+                activeLeadId = null;
+                saveLeads();
+                switchTab('leads');
             }
         }
 
@@ -365,10 +507,8 @@
             }
         }
 
-        // Initialize Theme & Stats on Load
         window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
+            if (localStorage.getItem('theme') === 'dark') {
                 document.documentElement.classList.add('dark');
                 document.getElementById('theme-icon').className = 'fa-solid fa-sun';
             }
