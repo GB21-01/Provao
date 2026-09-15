@@ -260,8 +260,8 @@
                 <h3 class="text-lg font-bold">Importar Leads</h3>
                 <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-sm text-gray-500">Cole no formato <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">Nome, Telefone</code> (um por linha):</p>
-            <textarea id="import-textarea" rows="6" placeholder="Gabriel, 11999998888" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
+            <p class="text-sm text-gray-500">Cole os dados onde o <strong class="text-gray-700 dark:text-gray-300">Nome fica em cima</strong> e o <strong class="text-gray-700 dark:text-gray-300">Telefone logo abaixo</strong> (em linhas alternadas):</p>
+            <textarea id="import-textarea" rows="8" placeholder="Gabriel de Santana&#10;11999998888&#10;Mariana Santos&#10;11987654321" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
             <div class="flex justify-end space-x-3 pt-2">
                 <button onclick="closeImportModal()" class="px-4 py-2 rounded-xl text-sm border border-gray-200 dark:border-gray-600">Cancelar</button>
                 <button onclick="processImport()" class="bg-metrocasa text-white px-5 py-2 rounded-xl text-sm font-semibold shadow">Importar</button>
@@ -298,7 +298,6 @@
             const titles = { leads: 'Gestão de Leads', dialer: 'Discador Ativo', analytics: 'Relatórios & Metas', settings: 'Configurações' };
             document.getElementById('page-title').innerText = titles[tabId];
 
-            // Fecha o menu ao trocar de aba no mobile
             if (window.innerWidth < 1024) {
                 toggleSidebar();
             }
@@ -448,21 +447,34 @@
 
         function processImport() {
             const text = document.getElementById('import-textarea').value;
-            const lines = text.split('\n');
+            // Filtra linhas vazias e remove espaços em branco extras
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
             let addedCount = 0;
-            lines.forEach(line => {
-                const parts = line.split(',');
-                if (parts.length >= 2) {
-                    const name = parts[0].trim();
-                    const phone = parts[1].trim();
-                    if (name && phone) {
-                        leads.push({ id: Date.now() + Math.random(), name, phone, status: 'Novo Lead' });
-                        addedCount++;
-                    }
+            
+            // Processa de 2 em 2 linhas (Linha i = Nome, Linha i+1 = Telefone)
+            for (let i = 0; i < lines.length; i += 2) {
+                const name = lines[i];
+                const phone = lines[i + 1];
+                
+                if (name && phone) {
+                    leads.push({ 
+                        id: Date.now() + Math.random(), 
+                        name: name, 
+                        phone: phone, 
+                        status: 'Novo Lead' 
+                    });
+                    addedCount++;
                 }
-            });
-            if (addedCount > 0) { saveLeads(); closeImportModal(); alert(`${addedCount} leads importados!`); }
-            else { alert('Formato inválido. Use Nome, Telefone por linha.'); }
+            }
+
+            if (addedCount > 0) { 
+                saveLeads(); 
+                closeImportModal(); 
+                alert(`${addedCount} leads importados com sucesso!`); 
+            } else { 
+                alert('Formato inválido. Certifique-se de que cada lead possui o nome na linha de cima e o telefone na linha de baixo.'); 
+            }
         }
 
         function resetData() {
