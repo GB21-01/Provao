@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discador & CRM Metrocasa</title>
+    <title>Discador & Relatórios Metrocasa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -25,7 +25,7 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex font-sans transition-colors duration-200">
 
-    <!-- Backdrop para mobile quando o menu abrir -->
+    <!-- Backdrop para mobile -->
     <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 hidden transition-opacity duration-300"></div>
 
     <!-- Menu Lateral (Sidebar) -->
@@ -36,22 +36,18 @@
                 <div class="bg-metrocasa text-white px-2.5 py-1.5 rounded-lg font-black text-base tracking-wider shadow">
                     METROCASA
                 </div>
-                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">CRM</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">DISCADOR</span>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-gray-400 hover:text-gray-600">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
 
-        <!-- Links de Navegação -->
+        <!-- Links de Navegação (Prioridade: Discador e Relatórios) -->
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <a href="#" onclick="switchTab('leads')" id="nav-leads" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold bg-metrocasa text-white shadow-sm transition">
-                <i class="fa-solid fa-address-book w-5"></i>
-                <span>Gestão de Leads</span>
-            </a>
-            <a href="#" onclick="switchTab('dialer')" id="nav-dialer" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+            <a href="#" onclick="switchTab('dialer')" id="nav-dialer" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold bg-metrocasa text-white shadow-sm transition">
                 <i class="fa-solid fa-headset w-5"></i>
-                <span>Discador Ativo</span>
+                <span>Discador & WhatsApp</span>
             </a>
             <a href="#" onclick="switchTab('analytics')" id="nav-analytics" class="nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                 <i class="fa-solid fa-chart-line w-5"></i>
@@ -85,7 +81,7 @@
                 <button onclick="toggleSidebar()" class="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-xl transition">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
-                <h1 id="page-title" class="text-base sm:text-lg font-bold">Gestão de Leads</h1>
+                <h1 id="page-title" class="text-base sm:text-lg font-bold">Discador & WhatsApp Ativo</h1>
             </div>
 
             <div class="flex items-center space-x-3">
@@ -100,92 +96,51 @@
         </header>
 
         <!-- Área de Abas -->
-        <main class="p-4 sm:p-8 flex-1 max-w-7xl w-full mx-auto">
+        <main class="p-4 sm:p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
             
-            <!-- ABA 1: LEADS -->
-            <div id="tab-content-leads" class="space-y-6">
-                <!-- Cards de Estatísticas -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <span id="stat-total" class="text-2xl font-black text-gray-800 dark:text-white">0</span>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Total de Leads</p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <span id="stat-attendance" class="text-2xl font-black text-yellow-600">0</span>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Em Atendimento</p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <span id="stat-visits" class="text-2xl font-black text-blue-600">0</span>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Visitas Agendadas</p>
-                    </div>
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <span id="stat-converted" class="text-2xl font-black text-green-600">0</span>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Propostas / Vendas</p>
-                    </div>
-                </div>
-
-                <!-- Tabela de Leads -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div class="relative w-full sm:w-80">
-                            <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="text" id="search-input" oninput="filterLeads()" placeholder="Pesquisar por nome ou telefone..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
-                        </div>
-
-                        <div class="flex items-center space-x-2 w-full sm:w-auto">
-                            <select id="filter-status" onchange="filterLeads()" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-metrocasa">
-                                <option value="">Todos os Status</option>
-                                <option value="Novo Lead">Novo Lead</option>
-                                <option value="Sem Contato">Sem Contato</option>
-                                <option value="Em Atendimento">Em Atendimento</option>
-                                <option value="Visita Agendada">Visita Agendada</option>
-                                <option value="Proposta / Venda">Proposta / Venda</option>
-                            </select>
-                            <button onclick="addNewLeadPrompt()" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition flex items-center space-x-1.5 whitespace-nowrap">
-                                <i class="fa-solid fa-plus"></i>
-                                <span>Novo Lead</span>
+            <!-- ABA 1: DISCADOR ATIVO (Principal) -->
+            <div id="tab-content-dialer" class="space-y-6">
+                <!-- Fila Rápida de Leads Importados -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <h3 class="font-bold text-sm sm:text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-list-ol text-metrocasa"></i>
+                            <span>Fila de Disparos em Volume (<span id="queue-count">0</span> leads)</span>
+                        </h3>
+                        <div class="flex space-x-2">
+                            <button onclick="nextLeadInQueue()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-xs font-semibold px-3 py-2 rounded-xl transition">
+                                <i class="fa-solid fa-forward-step mr-1"></i> Próximo da Fila
+                            </button>
+                            <button onclick="clearQueue()" class="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs font-semibold px-3 py-2 rounded-xl transition">
+                                Limpar Fila
                             </button>
                         </div>
                     </div>
-
-                    <div class="overflow-x-auto border border-gray-100 dark:border-gray-700 rounded-xl">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-50 dark:bg-gray-700/50 text-xs font-bold uppercase text-gray-400 border-b border-gray-100 dark:border-gray-700">
-                                    <th class="py-3.5 px-4">Nome do Lead</th>
-                                    <th class="py-3.5 px-4">Telefone</th>
-                                    <th class="py-3.5 px-4">Status</th>
-                                    <th class="py-3.5 px-4 text-right">Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leads-table-body" class="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
-                                <!-- Preenchido via JS -->
-                            </tbody>
-                        </table>
+                    <!-- Seletor Rápido de Leads da Fila -->
+                    <div id="queue-chips-container" class="flex gap-2 overflow-x-auto pb-2 max-h-24 scrollbar-thin">
+                        <span class="text-xs text-gray-400 italic py-2">Nenhum lead na fila. Clique em "Importar Leads (Volume)" acima.</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- ABA 2: DISCADOR ATIVO -->
-            <div id="tab-content-dialer" class="space-y-6 hidden">
+                <!-- Painel de Execução de Chamada & WhatsApp -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-6">
                         <h2 class="text-lg font-bold flex items-center space-x-2">
                             <i class="fa-solid fa-headset text-metrocasa"></i>
-                            <span>Painel de Chamadas & WhatsApp</span>
+                            <span>Painel de Disparo Direto</span>
                         </h2>
 
                         <div id="active-lead-card" class="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6 border-2 border-dashed border-gray-200 dark:border-gray-600 text-center">
-                            <p class="text-xs uppercase font-bold tracking-widest text-gray-400 mb-2">Lead Selecionado</p>
-                            <h3 id="current-lead-name" class="font-black text-xl text-gray-800 dark:text-white">Nenhum lead selecionado</h3>
+                            <p class="text-xs uppercase font-bold tracking-widest text-gray-400 mb-2">Lead em Foco</p>
+                            <h3 id="current-lead-name" class="font-black text-xl text-gray-800 dark:text-white">Selecione ou importe leads</h3>
                             <p id="current-lead-phone" class="text-metrocasa font-mono text-lg font-bold mt-1">(00) 00000-0000</p>
-                            <span id="current-lead-status" class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">Aguardando</span>
+                            <span id="current-lead-status" class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300">Aguardando Fila</span>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <a id="btn-whatsapp" href="#" target="_blank" onclick="return checkLeadSelected()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
                                 <i class="fa-brands fa-whatsapp text-xl"></i>
-                                <span>WhatsApp (Abordagem)</span>
+                                <span>WhatsApp Caixa</span>
                             </a>
                             <a id="btn-call" href="#" onclick="return checkLeadSelected()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
                                 <i class="fa-solid fa-phone"></i>
@@ -194,16 +149,17 @@
                         </div>
                     </div>
 
+                    <!-- Feedback / Classificação Rápida -->
                     <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                        <h3 class="font-bold text-base">Atualizar Status do Lead</h3>
-                        <p class="text-xs text-gray-500">Selecione o resultado do contato para atualizar o funil:</p>
+                        <h3 class="font-bold text-base">Registrar Resultado do Contato</h3>
+                        <p class="text-xs text-gray-500">Classifique o atendimento para computar automaticamente nas suas métricas:</p>
                         <div class="grid grid-cols-1 gap-2.5 pt-2">
                             <button onclick="updateActiveStatus('Sem Contato')" class="py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-sm text-left flex items-center justify-between transition">
                                 <span>Sem Contato / Caixa Postal</span>
                                 <i class="fa-solid fa-phone-slash text-gray-400"></i>
                             </button>
                             <button onclick="updateActiveStatus('Em Atendimento')" class="py-3 px-4 rounded-xl border border-yellow-200 bg-yellow-50/50 dark:bg-yellow-900/10 text-yellow-700 dark:text-yellow-400 font-semibold text-sm text-left flex items-center justify-between transition">
-                                <span>Em Atendimento</span>
+                                <span>Em Atendimento / Respondeu</span>
                                 <i class="fa-solid fa-comments text-yellow-600"></i>
                             </button>
                             <button onclick="updateActiveStatus('Visita Agendada')" class="py-3 px-4 rounded-xl border border-blue-200 bg-blue-50/50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 font-semibold text-sm text-left flex items-center justify-between transition">
@@ -219,33 +175,52 @@
                 </div>
             </div>
 
-            <!-- ABA 3: RELATÓRIOS -->
+            <!-- ABA 2: RELATÓRIOS & METAS (Prioridade Alta) -->
             <div id="tab-content-analytics" class="space-y-6 hidden">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                    <h2 class="text-lg font-bold">Desempenho Metrocasa</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center">
-                            <span id="report-conversion-rate" class="text-3xl font-black text-metrocasa">0%</span>
-                            <p class="text-xs text-gray-500 mt-1 font-semibold uppercase">Conversão (Visitas/Vendas)</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-total" class="text-3xl font-black text-gray-800 dark:text-white">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Leads Importados</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-attendance" class="text-3xl font-black text-yellow-600">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Em Atendimento</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-visits" class="text-3xl font-black text-blue-600">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Visitas Agendadas</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <span id="stat-converted" class="text-3xl font-black text-green-600">0</span>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">Propostas / Vendas</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-6">
+                    <h2 class="text-lg font-bold">Desempenho Geral de Conversão - Feirão Caixa</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
+                        <div class="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-2xl text-center border border-gray-100 dark:border-gray-700">
+                            <span id="report-conversion-rate" class="text-4xl font-black text-metrocasa">0%</span>
+                            <p class="text-xs text-gray-500 mt-2 font-bold uppercase tracking-wider">Taxa de Conversão (Visitas/Vendas)</p>
                         </div>
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center">
-                            <span id="report-active-contacts" class="text-3xl font-black text-blue-600">0</span>
-                            <p class="text-xs text-gray-500 mt-1 font-semibold uppercase">Em Andamento</p>
+                        <div class="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-2xl text-center border border-gray-100 dark:border-gray-700">
+                            <span id="report-active-contacts" class="text-4xl font-black text-blue-600">0</span>
+                            <p class="text-xs text-gray-500 mt-2 font-bold uppercase tracking-wider">Pipeline Ativo</p>
                         </div>
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center">
-                            <span id="report-lost-rate" class="text-3xl font-black text-gray-600">0</span>
-                            <p class="text-xs text-gray-500 mt-1 font-semibold uppercase">Sem Contato</p>
+                        <div class="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-2xl text-center border border-gray-100 dark:border-gray-700">
+                            <span id="report-lost-rate" class="text-4xl font-black text-gray-500">0</span>
+                            <p class="text-xs text-gray-500 mt-2 font-bold uppercase tracking-wider">Sem Contato Registrado</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ABA 4: CONFIGURAÇÕES -->
+            <!-- ABA 3: CONFIGURAÇÕES -->
             <div id="tab-content-settings" class="space-y-6 hidden">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                    <h2 class="text-lg font-bold">Configurações</h2>
+                    <h2 class="text-lg font-bold">Configurações e Dados</h2>
                     <button onclick="resetData()" class="bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 text-sm font-semibold px-4 py-2.5 rounded-xl transition">
-                        Restaurar Leads Padrão
+                        Zerar Todos os Dados da Fila
                     </button>
                 </div>
             </div>
@@ -253,41 +228,35 @@
         </main>
     </div>
 
-    <!-- Modal de Importação -->
+    <!-- Modal de Importação em Massa (Volume) -->
     <div id="import-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-6 border border-gray-200 dark:border-gray-700 shadow-xl space-y-4">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold">Importação em Massa</h3>
+                <h3 class="text-lg font-bold">Importação em Massa (Volume)</h3>
                 <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-sm text-gray-500">Cole seu volume de leads abaixo. O sistema aceita perfeitamente <strong class="text-gray-700 dark:text-gray-300">Nome em cima e Telefone embaixo</strong> (em linhas alternadas):</p>
+            <p class="text-sm text-gray-500">Cole seu grande volume de leads abaixo. O sistema aceita perfeitamente <strong class="text-gray-700 dark:text-gray-300">Nome em cima e Telefone embaixo</strong> (ou separados por vírgula):</p>
             <textarea id="import-textarea" rows="8" placeholder="João da Silva&#10;11999998888&#10;Maria Oliveira&#10;11987654321" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
             <div class="flex justify-end space-x-3 pt-2">
                 <button onclick="closeImportModal()" class="px-4 py-2 rounded-xl text-sm border border-gray-200 dark:border-gray-600">Cancelar</button>
-                <button onclick="processImport()" class="bg-metrocasa text-white px-5 py-2 rounded-xl text-sm font-semibold shadow">Importar Volume</button>
+                <button onclick="processImport()" class="bg-metrocasa text-white px-5 py-2 rounded-xl text-sm font-semibold shadow">Processar e Iniciar Fila</button>
             </div>
         </div>
     </div>
 
     <!-- Script da Aplicação -->
     <script>
-        const defaultLeads = [
-            { id: 1, name: 'Gabriel de Santana', phone: '11999998888', status: 'Novo Lead' },
-            { id: 2, name: 'Mariana Santos', phone: '11987654321', status: 'Em Atendimento' },
-            { id: 3, name: 'Roberto Almeida', phone: '11912345678', status: 'Visita Agendada' }
-        ];
-
-        let leads = JSON.parse(localStorage.getItem('metrocasa_leads')) || defaultLeads;
+        let leads = JSON.parse(localStorage.getItem('metrocasa_dialer_leads')) || [];
         let activeLeadId = null;
 
         function saveLeads() {
-            localStorage.setItem('metrocasa_leads', JSON.stringify(leads));
-            renderLeads();
+            localStorage.setItem('metrocasa_dialer_leads', JSON.stringify(leads));
+            renderQueueChips();
             updateStats();
         }
 
         function switchTab(tabId) {
-            ['leads', 'dialer', 'analytics', 'settings'].forEach(t => {
+            ['dialer', 'analytics', 'settings'].forEach(t => {
                 document.getElementById(`tab-content-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).className = "nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition";
             });
@@ -295,7 +264,7 @@
             document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
             document.getElementById(`nav-${tabId}`).className = "nav-link flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold bg-metrocasa text-white shadow-sm transition";
 
-            const titles = { leads: 'Gestão de Leads', dialer: 'Discador Ativo', analytics: 'Relatórios & Metas', settings: 'Configurações' };
+            const titles = { dialer: 'Discador & WhatsApp Ativo', analytics: 'Relatórios & Metas de Desempenho', settings: 'Configurações' };
             document.getElementById('page-title').innerText = titles[tabId];
 
             if (window.innerWidth < 1024) {
@@ -306,7 +275,6 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
-            
             const isOpen = !sidebar.classList.contains('-translate-x-full');
 
             if (isOpen) {
@@ -320,48 +288,34 @@
             }
         }
 
-        function renderLeads(filteredList = null) {
-            const tbody = document.getElementById('leads-table-body');
-            tbody.innerHTML = '';
-            const listToRender = filteredList || leads;
+        function renderQueueChips() {
+            const container = document.getElementById('queue-chips-container');
+            container.innerHTML = '';
+            document.getElementById('queue-count').innerText = leads.length;
 
-            if (listToRender.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-400">Nenhum lead encontrado.</td></tr>`;
+            if (leads.length === 0) {
+                container.innerHTML = `<span class="text-xs text-gray-400 italic py-2">Nenhum lead na fila. Clique em "Importar Leads (Volume)" acima.</span>`;
+                resetActiveCard();
                 return;
             }
 
-            listToRender.forEach(lead => {
-                const tr = document.createElement('tr');
-                tr.className = `hover:bg-gray-50 dark:hover:bg-gray-700/30 transition ${activeLeadId === lead.id ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`;
-                
-                tr.innerHTML = `
-                    <td class="py-3.5 px-4 font-semibold text-gray-800 dark:text-white">${lead.name}</td>
-                    <td class="py-3.5 px-4 font-mono text-gray-600 dark:text-gray-300">${lead.phone}</td>
-                    <td class="py-3.5 px-4"><span class="inline-block px-2.5 py-1 rounded-full text-xs font-bold ${getStatusBadgeClass(lead.status)}">${lead.status}</span></td>
-                    <td class="py-3.5 px-4 text-right">
-                        <button onclick="selectLeadAndOpenDialer(${lead.id})" class="bg-metrocasa hover:bg-metrocasa-dark text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition">
-                            <i class="fa-solid fa-headset mr-1"></i> Atender
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            leads.forEach(lead => {
+                const btn = document.createElement('button');
+                const isActive = activeLeadId === lead.id;
+                btn.className = `px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center space-x-1.5 border ${
+                    isActive 
+                        ? 'bg-metrocasa text-white border-metrocasa shadow' 
+                        : 'bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`;
+                btn.innerHTML = `<i class="fa-solid fa-user text-[10px]"></i> <span>${lead.name}</span> <span class="text-[9px] opacity-75 font-mono">(${lead.status})</span>`;
+                btn.onclick = () => selectLead(lead.id);
+                container.appendChild(btn);
             });
-        }
 
-        function getStatusBadgeClass(status) {
-            switch(status) {
-                case 'Novo Lead': return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
-                case 'Sem Contato': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-                case 'Em Atendimento': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
-                case 'Visita Agendada': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
-                case 'Proposta / Venda': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
-                default: return 'bg-gray-100 text-gray-600';
+            // Se nenhum ativo mas houver leads, seleciona o primeiro automaticamente
+            if (!activeLeadId && leads.length > 0) {
+                selectLead(leads[0].id);
             }
-        }
-
-        function selectLeadAndOpenDialer(id) {
-            selectLead(id);
-            switchTab('dialer');
         }
 
         function selectLead(id) {
@@ -378,7 +332,7 @@
             const btnWhatsapp = document.getElementById('btn-whatsapp');
             const btnCall = document.getElementById('btn-call');
 
-            // Mensagem personalizada integrada com o seu texto de abordagem do Feirão Caixa
+            // Mensagem de abordagem padrão do Feirão Caixa
             const mensagemAbordagem = `Olá, tudo bem? Me chamo Gabriel, sou representante do Feirão de Imóveis da Caixa Econômica Federal. Estou entrando em contato referente ao seu cadastro que demonstrou interesse em busca de imóvel. Identifiquei que você possui uma aprovação de crédito pelo programa Minha Casa Minha Vida. Você já conseguiu essa aquisição do seu imóvel ou gostaria de conhecer as opções disponíveis para aproveitar essa condição?`;
 
             btnWhatsapp.href = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(mensagemAbordagem)}`;
@@ -387,11 +341,38 @@
             btnCall.href = `tel:+55${cleanPhone}`;
             btnCall.classList.remove('opacity-50', 'cursor-not-allowed');
 
-            renderLeads();
+            renderQueueChips();
+        }
+
+        function resetActiveCard() {
+            activeLeadId = null;
+            document.getElementById('current-lead-name').innerText = 'Selecione ou importe leads';
+            document.getElementById('current-lead-phone').innerText = '(00) 00000-0000';
+            document.getElementById('current-lead-status').innerText = 'Aguardando Fila';
+            document.getElementById('btn-whatsapp').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn-call').classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        function nextLeadInQueue() {
+            if (leads.length === 0) return;
+            const currentIndex = leads.findIndex(l => l.id === activeLeadId);
+            const nextIndex = (currentIndex + 1) % leads.length;
+            selectLead(leads[nextIndex].id);
+        }
+
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'Novo Lead': return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+                case 'Sem Contato': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+                case 'Em Atendimento': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
+                case 'Visita Agendada': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+                case 'Proposta / Venda': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
+                default: return 'bg-gray-100 text-gray-600';
+            }
         }
 
         function checkLeadSelected() {
-            if (!activeLeadId) { alert('Selecione um lead primeiro.'); return false; }
+            if (!activeLeadId) { alert('Selecione um lead primeiro na fila.'); return false; }
             return true;
         }
 
@@ -402,19 +383,9 @@
                 lead.status = newStatus;
                 saveLeads();
                 selectLead(activeLeadId);
-                alert(`Status atualizado para: ${newStatus}`);
+                // Avança automaticamente para o próximo após classificar para dar velocidade
+                nextLeadInQueue();
             }
-        }
-
-        function filterLeads() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('filter-status').value;
-            const filtered = leads.filter(lead => {
-                const matchesQuery = lead.name.toLowerCase().includes(query) || lead.phone.includes(query);
-                const matchesStatus = statusFilter === '' || lead.status === statusFilter;
-                return matchesQuery && matchesStatus;
-            });
-            renderLeads(filtered);
         }
 
         function updateStats() {
@@ -434,55 +405,35 @@
             document.getElementById('report-conversion-rate').innerText = (total > 0 ? Math.round(((visits + converted) / total) * 100) : 0) + '%';
         }
 
-        function addNewLeadPrompt() {
-            const name = prompt('Nome do novo lead:');
-            if (!name) return;
-            const phone = prompt('Telefone com DDD (ex: 11999998888):');
-            if (!phone) return;
-            const newLead = { id: Date.now(), name: name.trim(), phone: phone.trim(), status: 'Novo Lead' };
-            leads.unshift(newLead);
-            saveLeads();
-            selectLeadAndOpenDialer(newLead.id);
-        }
-
         function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
         function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); document.getElementById('import-textarea').value = ''; }
 
         function processImport() {
             const text = document.getElementById('import-textarea').value;
-            // Limpeza robusta para volume: remove linhas vazias e espaços extras
             let rawLines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             
-            // Tratamento inteligente caso venha com termos como "Nome:" ou "Telefone:"
             let cleanLines = rawLines.map(line => {
                 return line.replace(/^(nome|cliente|contato|telefone|cel|tel)[\s:]*/i, '').trim();
             }).filter(l => l.length > 0);
 
             let addedCount = 0;
             
-            // Tenta detectar se o formato é por blocos de 2 linhas (Nome em cima, Telefone em baixo)
             for (let i = 0; i < cleanLines.length; i += 2) {
                 let name = cleanLines[i];
                 let phone = cleanLines[i + 1] || '';
 
-                // Se por acaso a pessoa colou linha única com vírgula/traço (ex: Nome, 1199999)
                 if (name && (name.includes(',') || name.includes('\t'))) {
                     let parts = name.split(/,|\t/);
                     if (parts.length >= 2) {
                         leads.push({ id: Date.now() + Math.random(), name: parts[0].trim(), phone: parts[1].trim(), status: 'Novo Lead' });
                         addedCount++;
-                        i--; // Compensar o incremento duplo do loop para esta linha única
+                        i--;
                         continue;
                     }
                 }
 
                 if (name && phone) {
-                    leads.push({ 
-                        id: Date.now() + Math.random(), 
-                        name: name, 
-                        phone: phone, 
-                        status: 'Novo Lead' 
-                    });
+                    leads.push({ id: Date.now() + Math.random(), name: name, phone: phone, status: 'Novo Lead' });
                     addedCount++;
                 }
             }
@@ -490,18 +441,27 @@
             if (addedCount > 0) { 
                 saveLeads(); 
                 closeImportModal(); 
-                alert(`${addedCount} leads importados em volume com sucesso!`); 
+                switchTab('dialer');
+                alert(`${addedCount} leads importados para a fila de disparo!`); 
             } else { 
                 alert('Não foi possível identificar os dados. Verifique se o formato está alternando Nome e Telefone por linha.'); 
             }
         }
 
-        function resetData() {
-            if (confirm('Restaurar leads padrão?')) {
-                leads = defaultLeads;
+        function clearQueue() {
+            if (confirm('Deseja limpar toda a fila de leads?')) {
+                leads = [];
                 activeLeadId = null;
                 saveLeads();
-                switchTab('leads');
+            }
+        }
+
+        function resetData() {
+            if (confirm('Zerar todos os dados do sistema?')) {
+                leads = [];
+                activeLeadId = null;
+                saveLeads();
+                switchTab('dialer');
             }
         }
 
@@ -524,7 +484,7 @@
                 document.documentElement.classList.add('dark');
                 document.getElementById('theme-icon').className = 'fa-solid fa-sun';
             }
-            renderLeads();
+            renderQueueChips();
             updateStats();
         });
     </script>
