@@ -94,7 +94,7 @@
                 </button>
                 <button onclick="openImportModal()" class="bg-metrocasa hover:bg-metrocasa-dark text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow transition flex items-center space-x-2">
                     <i class="fa-solid fa-file-arrow-up"></i>
-                    <span class="hidden sm:inline">Importar Leads</span>
+                    <span class="hidden sm:inline">Importar Leads (Volume)</span>
                 </button>
             </div>
         </header>
@@ -185,7 +185,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <a id="btn-whatsapp" href="#" target="_blank" onclick="return checkLeadSelected()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
                                 <i class="fa-brands fa-whatsapp text-xl"></i>
-                                <span>WhatsApp</span>
+                                <span>WhatsApp (Abordagem)</span>
                             </a>
                             <a id="btn-call" href="#" onclick="return checkLeadSelected()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl text-center shadow transition flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
                                 <i class="fa-solid fa-phone"></i>
@@ -257,14 +257,14 @@
     <div id="import-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-6 border border-gray-200 dark:border-gray-700 shadow-xl space-y-4">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold">Importar Leads</h3>
+                <h3 class="text-lg font-bold">Importação em Massa</h3>
                 <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-sm text-gray-500">Cole os dados onde o <strong class="text-gray-700 dark:text-gray-300">Nome fica em cima</strong> e o <strong class="text-gray-700 dark:text-gray-300">Telefone logo abaixo</strong> (em linhas alternadas):</p>
-            <textarea id="import-textarea" rows="8" placeholder="Gabriel de Santana&#10;11999998888&#10;Mariana Santos&#10;11987654321" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
+            <p class="text-sm text-gray-500">Cole seu volume de leads abaixo. O sistema aceita perfeitamente <strong class="text-gray-700 dark:text-gray-300">Nome em cima e Telefone embaixo</strong> (em linhas alternadas):</p>
+            <textarea id="import-textarea" rows="8" placeholder="João da Silva&#10;11999998888&#10;Maria Oliveira&#10;11987654321" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-metrocasa"></textarea>
             <div class="flex justify-end space-x-3 pt-2">
                 <button onclick="closeImportModal()" class="px-4 py-2 rounded-xl text-sm border border-gray-200 dark:border-gray-600">Cancelar</button>
-                <button onclick="processImport()" class="bg-metrocasa text-white px-5 py-2 rounded-xl text-sm font-semibold shadow">Importar</button>
+                <button onclick="processImport()" class="bg-metrocasa text-white px-5 py-2 rounded-xl text-sm font-semibold shadow">Importar Volume</button>
             </div>
         </div>
     </div>
@@ -378,7 +378,10 @@
             const btnWhatsapp = document.getElementById('btn-whatsapp');
             const btnCall = document.getElementById('btn-call');
 
-            btnWhatsapp.href = `https://wa.me/55${cleanPhone}?text=Olá%20${encodeURIComponent(lead.name)},%20tudo%20bem?%20Aqui%20é%20da%20Metrocasa.`;
+            // Mensagem personalizada integrada com o seu texto de abordagem do Feirão Caixa
+            const mensagemAbordagem = `Olá, tudo bem? Me chamo Gabriel, sou representante do Feirão de Imóveis da Caixa Econômica Federal. Estou entrando em contato referente ao seu cadastro que demonstrou interesse em busca de imóvel. Identifiquei que você possui uma aprovação de crédito pelo programa Minha Casa Minha Vida. Você já conseguiu essa aquisição do seu imóvel ou gostaria de conhecer as opções disponíveis para aproveitar essa condição?`;
+
+            btnWhatsapp.href = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(mensagemAbordagem)}`;
             btnWhatsapp.classList.remove('opacity-50', 'cursor-not-allowed');
 
             btnCall.href = `tel:+55${cleanPhone}`;
@@ -447,16 +450,32 @@
 
         function processImport() {
             const text = document.getElementById('import-textarea').value;
-            // Filtra linhas vazias e remove espaços em branco extras
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            // Limpeza robusta para volume: remove linhas vazias e espaços extras
+            let rawLines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             
+            // Tratamento inteligente caso venha com termos como "Nome:" ou "Telefone:"
+            let cleanLines = rawLines.map(line => {
+                return line.replace(/^(nome|cliente|contato|telefone|cel|tel)[\s:]*/i, '').trim();
+            }).filter(l => l.length > 0);
+
             let addedCount = 0;
             
-            // Processa de 2 em 2 linhas (Linha i = Nome, Linha i+1 = Telefone)
-            for (let i = 0; i < lines.length; i += 2) {
-                const name = lines[i];
-                const phone = lines[i + 1];
-                
+            // Tenta detectar se o formato é por blocos de 2 linhas (Nome em cima, Telefone em baixo)
+            for (let i = 0; i < cleanLines.length; i += 2) {
+                let name = cleanLines[i];
+                let phone = cleanLines[i + 1] || '';
+
+                // Se por acaso a pessoa colou linha única com vírgula/traço (ex: Nome, 1199999)
+                if (name && (name.includes(',') || name.includes('\t'))) {
+                    let parts = name.split(/,|\t/);
+                    if (parts.length >= 2) {
+                        leads.push({ id: Date.now() + Math.random(), name: parts[0].trim(), phone: parts[1].trim(), status: 'Novo Lead' });
+                        addedCount++;
+                        i--; // Compensar o incremento duplo do loop para esta linha única
+                        continue;
+                    }
+                }
+
                 if (name && phone) {
                     leads.push({ 
                         id: Date.now() + Math.random(), 
@@ -471,9 +490,9 @@
             if (addedCount > 0) { 
                 saveLeads(); 
                 closeImportModal(); 
-                alert(`${addedCount} leads importados com sucesso!`); 
+                alert(`${addedCount} leads importados em volume com sucesso!`); 
             } else { 
-                alert('Formato inválido. Certifique-se de que cada lead possui o nome na linha de cima e o telefone na linha de baixo.'); 
+                alert('Não foi possível identificar os dados. Verifique se o formato está alternando Nome e Telefone por linha.'); 
             }
         }
 
